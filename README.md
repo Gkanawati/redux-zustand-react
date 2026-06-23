@@ -1,73 +1,46 @@
-# React + TypeScript + Vite
+# React Redux Studies
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+![Redux Architecture](architecture-redux.png)
 
-Currently, two official plugins are available:
+## The Idea Behind Redux
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+Redux manages the **global state** of an application. Beyond each component's local state, there is a single global store accessible by all components.
 
-## React Compiler
+### Historical Context
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+- **Pre-2017** — The Context API lacked features, making Redux the dominant choice for global state.
+- **Today** — Context API is more capable, but Redux still offers things Context does not.
 
-## Expanding the ESLint configuration
+### Redux vs Context API
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+|                 | Redux                                 | Context API                            |
+| --------------- | ------------------------------------- | -------------------------------------- |
+| **Purpose**     | State management tool                 | A way to share data between components |
+| **Key feature** | State history / time-travel debugging | Simple information sharing             |
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+> `useContext` + `useReducer` can approximate Redux behavior, but they are not the same.
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+---
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+## Types of State
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+| Type                    | Description                                               | Tools                                               |
+| ----------------------- | --------------------------------------------------------- | --------------------------------------------------- |
+| **Local state**         | Variable scoped to a single component (e.g. active tab)   | `useState`, `Context API`, Jotai, Recoil            |
+| **Global state**        | Shared across the whole application (e.g. logged-in user) | Redux, `Context API` + `useReducer`, Zustand, Jotai |
+| **Server / HTTP state** | Data fetched from a backend                               | React Query, SWR, Redux Toolkit                     |
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+---
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+## Core Concepts
+
+### Event-Driven Architecture
+
+1. A user interaction (e.g. button click) **dispatches an action**.
+2. **Reducers** listen for dispatched actions and react accordingly.
+3. Multiple reducers can listen to the same action.
+
+### Key Primitives
+
+- **Store** — holds the entire global state of the application.
+- **Slice** — a logical segment of the store, typically scoped to a feature or domain (e.g. `auth`, `todo`).
