@@ -1,7 +1,7 @@
 import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
 import { useAppSelector } from '..';
 
-const playerSlice = createSlice({
+export const playerSlice = createSlice({
   name: 'player',
   initialState: {
     course: {
@@ -19,8 +19,8 @@ const playerSlice = createSlice({
               id: 'zx6lF1TL_xI',
               title: 'Por que utilizar o Redux?',
               duration: '14:06',
-            }
-          ]
+            },
+          ],
         },
         {
           id: '2',
@@ -40,23 +40,32 @@ const playerSlice = createSlice({
               id: 'JHL8BwUzNlI',
               title: 'Estrutura de pastas',
               duration: '08:12',
-            }
-          ]
-        }
-      ]
+            },
+          ],
+        },
+      ],
     },
     currentModuleIndex: 0,
     currentLessonIndex: 0,
   },
   reducers: {
-    play: (state, action: PayloadAction<{ moduleIndex: number; lessonIndex: number }>) => {
+    play: (
+      state,
+      action: PayloadAction<{ moduleIndex: number; lessonIndex: number }>,
+    ) => {
       const { moduleIndex, lessonIndex } = action.payload;
+      console.info('🚀 ~ lessonIndex:', lessonIndex);
+      console.info('🚀 ~ moduleIndex:', moduleIndex);
+
       state.currentModuleIndex = moduleIndex;
       state.currentLessonIndex = lessonIndex;
     },
     next: (state) => {
+      console.info('🚀 ~ state:', state);
+
       const nextLessonIndex = state.currentLessonIndex + 1;
-      const nextLesson = state.course.modules[state.currentModuleIndex].lessons[nextLessonIndex];
+      const nextLesson =
+        state.course.modules[state.currentModuleIndex].lessons[nextLessonIndex];
 
       if (nextLesson) {
         state.currentLessonIndex = nextLessonIndex;
@@ -71,14 +80,14 @@ const playerSlice = createSlice({
       }
     },
   },
-})
+});
 
 export const player = playerSlice.reducer;
 
 export const { play, next } = playerSlice.actions;
 
 export const useCurrentLesson = () => {
-  return useAppSelector(state => {  
+  return useAppSelector((state) => {
     const { currentModuleIndex, currentLessonIndex } = state.player;
 
     const currentModule = state.player.course.modules[currentModuleIndex];
@@ -86,4 +95,4 @@ export const useCurrentLesson = () => {
 
     return { currentModule, currentLesson };
   });
-}
+};
