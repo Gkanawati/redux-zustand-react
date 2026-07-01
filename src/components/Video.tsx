@@ -33,6 +33,7 @@ export function Video() {
         playing
         src={video.videoUrl}
         onEnded={() => handleNextLesson()}
+        volume={0.05}
       />
     </div>
   );
