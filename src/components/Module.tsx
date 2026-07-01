@@ -22,6 +22,16 @@ export function Module({
     (state) => state.player.course.modules[moduleIndex].lessons,
   );
 
+  const { isCurrentModule, currentLessonIndex } = useAppSelector((state) => {
+    const { currentModuleIndex, currentLessonIndex } = state.player;
+    const isCurrentModule = currentModuleIndex === moduleIndex;
+
+    return {
+      isCurrentModule,
+      currentLessonIndex,
+    };
+  });
+
   return (
     <Collapsible.Root className='group'>
       <Collapsible.Trigger className='flex w-full items-center gap-3 bg-zinc-800 p-4 hover:bg-zinc-700 transition-colors'>
@@ -44,6 +54,7 @@ export function Module({
               key={lesson.id}
               title={lesson.title}
               duration={lesson.duration}
+              isCurrent={isCurrentModule && currentLessonIndex === lessonIndex}
               onPlay={() => dispatch(play({ moduleIndex, lessonIndex }))}
             />
           ))}
